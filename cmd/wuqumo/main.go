@@ -100,7 +100,7 @@ func refreshCache() {
 
 		// Parse CSV file
 		reader := csv.NewReader(file)
-		reader.FieldsPerRecord = 4 // Expect 2 fields per record
+		reader.FieldsPerRecord = 11 // Total 11 columns, only first 3 are useful
 		records, err := reader.ReadAll()
 		if err != nil {
 			log.Fatalf("Unable to parse CSV file: %v", err)
@@ -109,10 +109,14 @@ func refreshCache() {
 		// Map data to User struct
 		var objects []TranscodeObject
 		for idx, row := range records {
+			if row[2] == "" {
+				continue
+			}
+
 			record := TranscodeObject{
 				ID:     uint32(idx) + 1,
 				Wuqumo: row[0],
-				LCP:    row[1],
+				LCP:    row[2],
 			}
 			objects = append(objects, record)
 		}
